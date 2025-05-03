@@ -13,11 +13,11 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault()
 
-    if (nombreUsuario === 'admin' && contraseña === '1234') {
+    if (nombreUsuario.trim() === 'admin' && contraseña.trim() === '1234') {
       localStorage.setItem('logeado', 'true') 
       localStorage.setItem('rol', 'admin')
       router.push('/')
-    } else if (nombreUsuario === 'usuario' && contraseña === '4321') {
+    } else if (nombreUsuario.trim() === 'usuario' && contraseña.trim() === '4321') {
       localStorage.setItem('logeado', 'true') 
       localStorage.setItem('rol', 'usuario')
       router.push('/')      
