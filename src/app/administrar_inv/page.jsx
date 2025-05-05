@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function AdminInv() {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function AdminInv() {
       <h1 className="text-center text-4xl font-bold mb-12 text-blue-950">
         Administrar Inventario 
       </h1>
-
+      <Link className= "self-center hover:text-amber-50 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700" href="/eliminar_producto" >Cambiar Vista Eliminar Producto</Link>
       <h2 className="text-2xl font-semibold mb-4">Agregar Producto</h2>
       <form className="flex flex-col" onSubmit={handleSubmit}>
         <div className="mb-6">
