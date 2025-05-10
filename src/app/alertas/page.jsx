@@ -1,29 +1,55 @@
 'use client'
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default  function Alertas() {
-  const router = useRouter()
+export default function Alertas() {
+  const router = useRouter();
+  const ALERTA_STOCK_BAJO = 5;
+
+  const [inventario, setInventario] = useState([]);
+  const [productosBajoStock, setProductosBajoStock] = useState([]);
 
   useEffect(() => {
-    const sesion = localStorage.getItem('logeado')
+    const sesion = localStorage.getItem('logeado');
     if (sesion !== 'true') {
-      router.push('/login')
+      router.push('/login');
+    } else {
+      const inventarioGuardado = JSON.parse(localStorage.getItem('inventario')) || [];
+      const inventarioActual = inventarioGuardado.map(item => ({
+        ...item,
+        stock: Number(item.stock),
+      }));
+      setInventario(inventarioActual);
+
+      const bajos = inventarioActual.filter(item => item.stock < ALERTA_STOCK_BAJO);
+      setProductosBajoStock(bajos);
     }
-  }, [router])
-    
+  }, [router]);
 
   return (
     <div className="flex flex-col min-h-screen text-black px-6 py-8">
-      <h1 className="text-center text-4xl font-bold mb-12 text-blue-950">
-        ¡¡Alertas!!
-      </h1>
-      <h2 className="bg-green-500 text-white px-4 py-2 rounded mb-4">¡El Producto de ID 1 esta con bajo stock!</h2>
-      <h2 className="bg-green-500 text-white px-4 py-2 rounded mb-4">¡El Producto de ID 2 esta con bajo stock!</h2>
-      <h2 className="bg-green-500 text-white px-4 py-2 rounded mb-4">¡El Producto de ID 5 esta con bajo stock!</h2>
-      <h2 className="bg-green-500 text-white px-4 py-2 rounded mb-4">¡El Producto de ID 9 esta con bajo stock!</h2>
-      <h2 className="bg-green-500 text-white px-4 py-2 rounded mb-4">¡El Producto de ID 3 esta con bajo stock!</h2>
-    </div>
-      
-  );
-}
+      <h1 className="text-3xl font-bold mb-6">Alertas de Inventario</h1>
+
+      {inventario.length === 0 ? (
+      <div className="bg-gray-50 text-blue-500 p-4 rounded mb-4">
+        No hay productos en el inventario
+      </div>
+      ) : productosBajoStock.length > 0 ? (
+        <div className="bg-gray-50 text-blue-500 p-4 rounded mb-4">
+          ¡Hay productos con bajo stock (MENOR A {ALERTA_STOCK_BAJO})!
+          <ul className="list-disc ml-6 mt-2">
+            {productosBajoStock.map(producto => (
+              <li key={producto.id}>
+                <h2>{producto.nombre} (ID: {producto.id}) — Stock: {producto.stock}</h2>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="bg-green-100 text-green-700 p-4 rounded mb-4">
+          Todos los productos tienen stock suficiente (MAYOR A {ALERTA_STOCK_BAJO})
+        </div>
+      )}
+  </div>
+
+)};
